@@ -33,6 +33,7 @@ resource "aws_subnet" "private" {
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = each.value
   availability_zone       = var.availability_zones[each.key]
+  map_public_ip_on_launch = true
   tags = {
     Name                                        = "private-subnet-${each.key}"
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
@@ -108,11 +109,4 @@ resource "aws_route_table" "private-rtb" {
   tags = {
     Name = "${var.cluster_name}-private-rtb-${each.key}"
   }
-}
-
-resource "aws_route_table_association" "private" {
-  for_each = aws_subnet.private  # ex: "a", "b", "c"
-
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.private-rtb[each.key].id
 }
