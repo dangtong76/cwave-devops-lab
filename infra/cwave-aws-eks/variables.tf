@@ -57,3 +57,13 @@ variable "environment" {
   type        = string
   default     = "dev"  # 필요한 경우 기본값 설정
 }
+
+variable "eks_namespace_roles" {
+  description = "Map of EKS namespace roles and their configurations"
+  type = map(object({
+    name                = string
+    environment         = string
+    additional_policies = list(string)
+  }))
+  default = {}
+}

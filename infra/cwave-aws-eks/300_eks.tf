@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  version         = "~> 20.29.0"
+  version         = "~> 20.37"
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
 
@@ -38,7 +38,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
   vpc_id                   = aws_vpc.vpc.id
   # subnet_ids               = [aws_subnet.private-subnet-a.id, aws_subnet.private-subnet-c.id]
-  subnet_ids               = [for s in aws_subnet.private : s.value.id]
+  subnet_ids               = [for s in aws_subnet.private : s.id]
 
   # EKS Managed Node Group
   eks_managed_node_group_defaults = {
@@ -62,7 +62,7 @@ module "eks" {
 
 module "ebs_csi_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.30"
+  version = "~> 5.59"
 
   role_name = "${var.cluster_name}-ebs-csi-controller"
 
@@ -78,7 +78,7 @@ module "ebs_csi_irsa" {
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 4.12"
+  version = "~> 5.59"
 
   role_name_prefix      = "VPC-CNI-IRSA"
   attach_vpc_cni_policy = true
